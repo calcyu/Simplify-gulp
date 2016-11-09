@@ -12,7 +12,7 @@
 5. 实现服务器端口修改
 6. 浏览器前缀和兼容等问题
 7. 给压缩的CSS和JS加头注释
-
+8. 支持less
 
 ## License
 The MIT License(http://opensource.org/licenses/MIT)

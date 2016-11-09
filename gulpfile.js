@@ -12,11 +12,14 @@
 // 5.实现服务器端口修改
 // 6.浏览器前缀和兼容等问题
 // 7.给压缩的CSS和JS加头注释
+// 8.支持less
 
 
 //命令行参数
 var yargs = require('yargs').argv;
 var gulp = require('gulp');
+var less = require('gulp-less');
+var sourcemaps = require('gulp-sourcemaps');
 //添加头注释
 var header = require('gulp-header');
 //css压缩
@@ -37,6 +40,7 @@ var notify = require('gulp-notify');
 var cache = require('gulp-cache');
 
 var pkg = require('./package.json');
+var option = {base: 'src'};
 var dist = __dirname + '/dist';
  var banner = [
         '/*!',
@@ -46,12 +50,17 @@ var dist = __dirname + '/dist';
         ' * Licensed under the <%= pkg.license %> license',
         ' */',
         ''].join('\n');
-gulp.task('build:css', function (){
-    gulp.src('src/css/*.css')
-        .pipe(concat('app.css'))
+gulp.task('build:style', function (){
+    gulp.src('src/style/*.less', option)
+        .pipe(sourcemaps.init())
+        .pipe(less().on('error', function (e) {
+            console.error(e.message);
+            this.emit('end');
+        }))
         .pipe(postcss([autoprefixer(['iOS >= 7', 'Android >= 4.1'])]))
         .pipe(header(banner, { pkg : pkg } ))
-        .pipe(gulp.dest(dist+'/css'))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(dist))
         .pipe(browserSync.reload({stream: true}))
         .pipe(nano({
             zindex: false,
@@ -60,44 +69,44 @@ gulp.task('build:css', function (){
         .pipe(rename(function (path) {
             path.basename += '.min';
         }))
-        .pipe(gulp.dest(dist+'/css'))
-        .pipe(notify({ message: 'CSS task complete' }));
+        .pipe(gulp.dest(dist))
+        .pipe(notify({ message: 'Style task complete' }));
 });
 
 gulp.task('build:js', function () {
-  gulp.src('src/js/*.js')
-    .pipe(concat('app.js'))
+  gulp.src('src/js/*.js', option)
+    .pipe(concat('js/app.js'))
     .pipe(header(banner, { pkg : pkg } ))
-    .pipe(gulp.dest(dist+'/js'))
+    .pipe(gulp.dest(dist))
     .pipe(browserSync.reload({stream: true}))
     .pipe(uglify())
     .pipe(rename(function (path) {
         path.basename += '.min';
     }))
-    .pipe(gulp.dest(dist+'/js'))
+    .pipe(gulp.dest(dist))
     .pipe(notify({ message: 'JS task complete' }));
 });
 
 gulp.task('build:images', function (){
-    gulp.src('src/images/*.?(png|jpg|gif)')
-    .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+    gulp.src('src/images/*.?(png|jpg|gif)', option)
+    .pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
     .pipe(gulp.dest(dist))
     .pipe(browserSync.reload({stream: true}))
     .pipe(notify({ message: 'Images task complete' }));
 });
 
 gulp.task('build:html', function (){
-    gulp.src('src/*.html')
+    gulp.src('src/*.html', option)
     .pipe(gulp.dest(dist))
     .pipe(browserSync.reload({stream: true}))
     .pipe(notify({ message: 'HTML task complete' }));
 });
 
-gulp.task('release', ['build:css', 'build:js', 'build:images', 'build:html']);
+gulp.task('release', ['build:style', 'build:js', 'build:images', 'build:html']);
 
 gulp.task('watch', ['release'], function () {
-    gulp.watch('src/css/*.css', ['build:css']);
-    gulp.watch('src/css/*.js', ['build:js']);
+    gulp.watch('src/style/*.less', ['build:style']);
+    gulp.watch('src/js/*.js', ['build:js']);
     gulp.watch('src/images/*.?(png|jpg|gif)', ['build:images']);
     gulp.watch('src/*.html', ['build:html']);
 });

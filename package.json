@@ -4,9 +4,9 @@
   "description": "A Web lightweight framework (Simplify-gulp)",
   "main": "src/index.html",
   "scripts": {
-        "start": "gulp -ws",
-        "test": "gulp release"
-    },
+    "start": "gulp -ws",
+    "test": "gulp release"
+  },
   "keywords": [
     "Simplify",
     "gulp",
@@ -14,8 +14,8 @@
     "web"
   ],
   "repository": {
-      "type": "git",
-      "url": "https://github.com/calcyu/Simplify-gulp.git"
+    "type": "git",
+    "url": "https://github.com/calcyu/Simplify-gulp.git"
   },
   "homepage": "https://github.com/calcyu/Simplify-gulp",
   "author": "calcyu",
@@ -29,9 +29,11 @@
     "gulp-cssnano": "^2.1.2",
     "gulp-header": "^1.8.8",
     "gulp-imagemin": "^3.1.1",
+    "gulp-less": "^3.2.0",
     "gulp-notify": "^2.2.0",
     "gulp-postcss": "^6.2.0",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.2.0",
     "gulp-uglify": "^2.0.0",
     "yargs": "^6.3.0"
   }
